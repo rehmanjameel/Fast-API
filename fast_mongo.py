@@ -1,3 +1,5 @@
+
+import uvicorn
 from fastapi import FastAPI
 from mongo_fast.routes.route import router
 
@@ -5,6 +7,9 @@ from mongo_fast.routes.route import router
 app = FastAPI()
 
 app.include_router(router)
+
+if __name__ == "__main__":
+    uvicorn.run("fast_mongo:app", host="0.0.0.0", port=8000, reload=True)
 
 # from pymongo.mongo_client import MongoClient
 

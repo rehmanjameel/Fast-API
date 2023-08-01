@@ -1,9 +1,10 @@
+import uvicorn
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field
 from uuid import UUID
 
-import models
-from database import engine, SessionLocal
+from fast_alchemy import models
+from fast_alchemy.database import engine, SessionLocal
 from sqlalchemy.orm import Session
 
 app = FastAPI()
@@ -29,13 +30,13 @@ class Book(BaseModel):
 BOOKS = []
 
 
-@app.get("/")
+@app.get("/get_books")
 def read_api(db: Session = Depends(get_db)):
     return db.query(models.Books).all()
     # return BOOKS
 
 
-@app.post("/")
+@app.post("/add_book")
 def create_book(book: Book, db: Session = Depends(get_db)):
     # BOOKS.append(book)
 
@@ -52,7 +53,7 @@ def create_book(book: Book, db: Session = Depends(get_db)):
     return book
 
 
-@app.put("/{book_id}")
+@app.put("/update_book/{book_id}")
 def update_book(book_id: int, book: Book, db: Session = Depends(get_db)):
 
     # simple without db
@@ -83,7 +84,7 @@ def update_book(book_id: int, book: Book, db: Session = Depends(get_db)):
     return book
 
 
-@app.delete("/{book_id}")
+@app.delete("/delete_book/{book_id}")
 def delete_book(book_id: int, db: Session = Depends(get_db)):
     # counter = 0
     # for x in BOOKS:
@@ -102,3 +103,7 @@ def delete_book(book_id: int, db: Session = Depends(get_db)):
 
     db.query(models.Books).filter(models.Books.id == book_id).delete()
     db.commit()
+
+
+if __name__ == "__main__":
+    uvicorn.run("books:app", host="0.0.0.0", port=8000, reload=True)

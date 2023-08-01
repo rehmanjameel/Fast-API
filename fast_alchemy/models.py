@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from database import Base
+from fast_alchemy.database import Base
 
 
 # model class to access the database
